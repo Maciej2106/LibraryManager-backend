@@ -3,12 +3,13 @@ import bcrypt from 'bcrypt';
 import { logAction, authenticate, authorize, writeDB } from './middleware.js';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-const server = jsonServer.create();
-const router = jsonServer.router('db.json');
 import { v4 as uuidv4 } from 'uuid'; 
 import path from 'path';
+import fs from 'fs/promises'; 
 import { fileURLToPath } from 'url';
 
+const server = jsonServer.create();
+const router = jsonServer.router('db.json');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, 'db.json');
@@ -52,7 +53,6 @@ server.post('/register', async (req, res) => {
         res.status(500).json({ message: 'Błąd serwera podczas rejestracji' });
     }
 });
-
 server.post('/login', async (req, res) => {
     console.log("Otrzymano żądanie logowania:", req.body);
     const { libraryCardId, password } = req.body;
@@ -88,7 +88,6 @@ server.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Błąd serwera podczas logowania' });
     }
 });
-
 server.get('/rentals', authenticate, (req, res) => {
     const db = router.db.getState();
     if (req.user.role === 'Admin') {
@@ -100,7 +99,6 @@ server.get('/rentals', authenticate, (req, res) => {
     }    
     res.status(403).json({ message: "Forbidden" });
 });
-
 server.patch('/rentals/:id', authenticate, async (req, res) => {
     try {
         const db = router.db.getState();
@@ -142,30 +140,40 @@ server.patch('/rentals/:id', authenticate, async (req, res) => {
         return res.status(500).json({ message: 'Server error during return' });
     }
 });
-
 server.post('/rentals', authenticate, async (req, res) => {
-  try {
-    const db = router.db.getState();
-    const rentalDate = new Date().toISOString().slice(0, 10); 
-    // Obliczamy datę zwrotu (14 dni od daty wypożyczenia)
-    const returnDate = new Date();
-    returnDate.setDate(returnDate.getDate() + 14);
-    const returnDateFormatted = returnDate.toISOString().slice(0, 10);
-    const newRental = {
-      ...req.body,
-      id: uuidv4(), // Generujemy unikalne ID dla wypożyczenia
-      userId: req.user.id,
-      rentalDate: rentalDate,
-      returnDate: returnDateFormatted,
-      status: "Borrowed"
-    };
-    db.rentals.push(newRental);
-    await router.db.write();    
-    res.status(201).json(newRental); 
-  } catch (error) {
-    console.error("Błąd podczas dodawania wypożyczenia:", error);
-    res.status(500).json({ message: "Wystąpił błąd serwera." });
-  }
+    try {
+        const db = router.db.getState();
+        const bookId = req.body.bookId;
+        const book = db.books.find(b => b.id === bookId);
+        if (!book) {
+            return res.status(404).json({ message: "Książka nie znaleziona." });
+        }
+        if (book.availableCopies <= 0) {
+            return res.status(400).json({ message: "Książka niedostępna." });
+        }
+        const rentalDate = new Date().toISOString().slice(0, 10);
+        const returnDate = new Date();
+        returnDate.setDate(returnDate.getDate() + 14);
+        const returnDateFormatted = returnDate.toISOString().slice(0, 10);
+        const newRental = {
+            ...req.body,
+            id: uuidv4(),
+            userId: req.user.id,
+            rentalDate: rentalDate,
+            returnDate: returnDateFormatted,
+            status: "Borrowed"
+        };
+        // Aktualizacja książki
+        book.availableCopies--;
+        // Aktualizacja wypożyczeń
+        db.rentals.push(newRental);
+        // Zapis do pliku
+        await router.db.write();
+        res.status(201).json(newRental);
+    } catch (error) {
+        console.error("Błąd podczas dodawania wypożyczenia:", error);
+        res.status(500).json({ message: "Wystąpił błąd serwera." });
+    }
 });
 // Endpoint /books - DOSTĘPNY PUBLICZNIE (bez autoryzacji)
 server.get('/books', (req, res) => {
@@ -181,7 +189,6 @@ server.get('/logs', authenticate, authorize('Admin'), async (req, res) => {
     try {
         const data = await fs.readFile(dbPath, 'utf8');
         const db = JSON.parse(data);
-
         if (!db.logs || !Array.isArray(db.logs)) { // Sprawdzenie, czy logs istnieją i są tablicą
             return res.status(200).json([]); // Zwracamy pustą tablicę, jeśli logi nie istnieją
         }
@@ -197,7 +204,7 @@ server.use(authenticate, (req, res, next) => {
     logAction(`${req.method} ${req.path}, req.user`);
     next();
 });
-server.use((err, req, res) => {
+server.use((err, req, res, next) => {
     console.error(err.stack); // Logujemy stack trace błędu
     res.status(500).json({ message: 'Coś poszło nie tak!' }); 
 });
