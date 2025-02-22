@@ -1,0 +1,134 @@
+{
+  "users": [
+    {
+      "id": "00a48e77-790f-4913-8e5b-b16c5ca4ca91",
+      "name": "Dorota",
+      "email": "dorota@o2.pl",
+      "password": "$2b$10$/vzl2ORPdcZZYBq3HUPANezIE7yvmTJvsKIB2b51C/29896lYiW0W",
+      "role": "Client",
+      "libraryCardId": "CARD-1738491361363"
+    },
+    {
+      "id": "9d9fc938-379c-4668-a6bf-93ad63e26238",
+      "name": "admin",
+      "email": "ad@ad",
+      "password": "$2b$10$iSnVz7pBVZD6UP8DahPRnug9XXGOZhMbwSG1sBjXxyscVSf4siFjK",
+      "role": "Admin",
+      "libraryCardId": "CARD-1738532515951"
+    },
+    {
+      "id": "ba9ceef2-fe39-4e16-a0e9-aa7c6199c6ad",
+      "name": "Franio",
+      "email": "franio@o2.pl",
+      "password": "$2b$10$A05DlnEdlL6qrHd7BP6RGunNtu3LmFbU2NauML0pdS47wSKRE5WnK",
+      "role": "Client",
+      "libraryCardId": "CARD-1740160430059"
+    }
+  ],
+  "books": [
+    {
+      "id": "1",
+      "title": "Potop",
+      "author": "Henryk Sienkiewicz",
+      "description": "Historia z czasów szwedzkiego potopu.",
+      "year": 1886,
+      "availableCopies": 8,
+      "borrowedCopies": 0
+    },
+    {
+      "id": "2",
+      "title": "Lalka",
+      "author": "Bolesław Prus",
+      "description": "Historia miłości Stanisława Wokulskiego.",
+      "year": 1890,
+      "availableCopies": 3,
+      "borrowedCopies": 0
+    },
+    {
+      "title": "Czysty kod",
+      "author": "Robert C.Martin",
+      "description": "podręcznik dobrego programisty",
+      "availableCopies": 4,
+      "borrowedCopies": 0,
+      "year": 2023,
+      "id": "IyktWfu"
+    }
+  ],
+  "rentals": [
+    {
+      "bookId": "1",
+      "id": "864fffcc-f4aa-4e33-9451-f27b5f88fe44",
+      "userId": "00a48e77-790f-4913-8e5b-b16c5ca4ca91",
+      "rentalDate": "2025-02-21",
+      "returnDate": "2025-03-07",
+      "status": "Borrowed"
+    }
+  ],
+  "logs": [
+    {
+      "timestamp": "2025-02-03T12:41:10.141Z",
+      "user": "ad@ad (Admin)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-03T18:24:55.305Z",
+      "user": "ad@ad (Admin)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T13:59:03.830Z",
+      "user": "ad@ad (Admin)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T13:59:03.916Z",
+      "user": "ad@ad (Admin)",
+      "action": "View Logs"
+    },
+    {
+      "timestamp": "2025-02-21T14:08:38.238Z",
+      "user": "dorota@o2.pl (Client)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T14:10:32.186Z",
+      "user": "dorota@o2.pl (Client)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T17:44:52.066Z",
+      "user": "dorota@o2.pl (Client)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T17:53:50.062Z",
+      "user": "franio@o2.pl (Client)",
+      "action": "Registration"
+    },
+    {
+      "timestamp": "2025-02-21T19:19:34.941Z",
+      "user": "ad@ad (Admin)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T19:19:35.007Z",
+      "user": "ad@ad (Admin)",
+      "action": "View Logs"
+    },
+    {
+      "timestamp": "2025-02-21T20:25:16.541Z",
+      "user": "dorota@o2.pl (Client)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T20:25:47.969Z",
+      "user": "ad@ad (Admin)",
+      "action": "Login"
+    },
+    {
+      "timestamp": "2025-02-21T20:25:48.038Z",
+      "user": "ad@ad (Admin)",
+      "action": "View Logs"
+    }
+  ]
+}
